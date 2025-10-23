@@ -1,0 +1,88 @@
+/* src/css/Navbar.css */
+.navbar {
+    background-color: #C8E6C9;
+    padding: 1rem 0;
+    /* Padding vertikal 16px */
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); */
+    /* Shadow ringan */
+    position: fixed;
+    /* Menjadikan navbar tetap di posisi tertentu */
+    top: 0;
+    /* Memposisikan navbar di bagian paling atas */
+    width: 100%;
+    /* Memastikan navbar selebar layar penuh */
+    z-index: 1000;
+    /* Memastikan navbar selalu di atas elemen lain */
+}
+
+.navbarContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* max-width: 1200px; -- Akan dihandle oleh .container global */
+    /* margin: 0 auto; -- Akan dihandle oleh .container global */
+    padding: 0 1rem;
+    /* Padding horizontal */
+}
+
+.logoContainer {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    height: 40px;
+    /* Tinggi logo */
+    margin-right: 0.5rem;
+    /* Jarak antara logo dan teks (jika ada) */
+}
+
+.navbarNav {
+    display: none;
+    /* Sembunyikan di mobile secara default */
+}
+
+.navbarNav a {
+    color: var(--text-gray);
+    /* Menggunakan variabel CSS */
+    font-weight: 500;
+    margin-left: 1.5rem;
+    /* Jarak antar item navigasi */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.navbarNav a:hover {
+    color: var(--primary-green);
+    /* Menggunakan variabel CSS */
+}
+
+.loginButton {
+    background-color: var(--primary-blue);
+    color: #fff;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    /* Padding tombol */
+    border-radius: 0.5rem;
+    /* Border radius */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.loginButton:hover {
+    background-color: #1e40af;
+    /* Warna hover yang sedikit lebih gelap */
+}
+
+/* Media Queries for Responsiveness */
+@media (min-width: 768px) {
+
+    /* Untuk layar tablet ke atas */
+    .navbarNav {
+        display: flex;
+        /* Tampilkan navigasi di desktop */
+        margin-right: 1.5rem;
+        /* Jarak antara navigasi dan tombol login */
+    }
+}

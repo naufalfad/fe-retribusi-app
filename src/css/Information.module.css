@@ -1,0 +1,196 @@
+/* src/css/Information.module.css */
+
+.informationSection {
+    background-color: #C8E6C9;
+    /* Warna latar belakang yang mirip dengan desain Anda */
+    padding: 4rem 0;
+    /* Padding atas dan bawah */
+}
+
+.informationContent {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    /* Jarak antar blok utama */
+    padding: 0 1rem;
+    /* Padding horizontal */
+}
+
+.mainInfo {
+    display: flex;
+    flex-direction: column;
+    /* Default: kolom di mobile */
+    align-items: center;
+    gap: 2rem;
+    text-align: center;
+}
+
+.mainInfoIllustration {
+    width: 100%;
+    max-width: 300px;
+    /* Batasi lebar ilustrasi */
+    height: auto;
+}
+
+.mainInfoText {
+    max-width: 700px;
+    /* Batasi lebar teks agar tidak terlalu melebar */
+}
+
+.mainInfoTitle {
+    font-size: 2.5rem;
+    /* Ukuran judul utama */
+    font-weight: 700;
+    color: #125735;
+    /* Warna teks gelap */
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.mainInfoDescription {
+    font-size: 1rem;
+    color: #4a5568;
+    /* Warna teks abu-abu */
+    line-height: 1.6;
+}
+
+.featureGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    /* Default: 1 kolom di mobile */
+    gap: 2rem;
+    /* Jarak antar item fitur */
+}
+
+.featureItem {
+    display: flex;
+    flex-direction: column;
+    /* Default: kolom di mobile */
+    align-items: center;
+    gap: 1.5rem;
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.featureImage {
+    width: 100%;
+    max-width: 300px;
+    /* Ukuran gambar fitur */
+    height: auto;
+    border-radius: 0.5rem;
+    /* Rounded corners untuk gambar */
+    object-fit: cover;
+    /* Pastikan gambar mengisi area tanpa distorsi */
+}
+
+.featureTextContent {
+    flex: 1;
+    /* Agar mengambil ruang yang tersedia */
+}
+
+.featureTitle {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+}
+
+.featureDescription {
+    font-size: 0.95rem;
+    color: #4a5568;
+    line-height: 1.5;
+}
+
+/* Media Queries for Responsiveness */
+@media (min-width: 768px) {
+
+    /* Untuk layar tablet ke atas */
+    .informationSection {
+        padding: 6rem 0;
+    }
+
+    .mainInfo {
+        flex-direction: row;
+        /* Desktop: tata letak baris */
+        text-align: left;
+        gap: 3rem;
+    }
+
+    .mainInfoIllustration {
+        max-width: 350px;
+        /* Ilustrasi lebih besar di desktop */
+    }
+
+    .mainInfoText {
+        flex: 1;
+        /* Teks mengambil sisa ruang */
+    }
+
+    .mainInfoTitle {
+        font-size: 3.5rem;
+        /* Ukuran judul lebih besar */
+    }
+
+    .mainInfoDescription {
+        font-size: 1.1rem;
+    }
+
+    .featureGrid {
+        grid-template-columns: repeat(2, 1fr);
+        /* 2 kolom di tablet */
+    }
+
+    .featureItem {
+        flex-direction: row;
+        /* Tata letak baris untuk item fitur */
+        text-align: left;
+        gap: 1.5rem;
+    }
+
+    .featureImage {
+        width: 150px;
+        /* Ukuran gambar fitur yang lebih kecil */
+        height: 100px;
+        flex-shrink: 0;
+        /* Mencegah gambar menyusut */
+    }
+}
+
+@media (min-width: 1024px) {
+
+    /* Untuk layar laptop ke atas */
+    .informationSection {
+        padding: 8rem 0;
+    }
+
+    .featureGrid {
+        grid-template-columns: repeat(4, 1fr);
+        /* 4 kolom di desktop */
+        gap: 2.5rem;
+    }
+
+    .featureItem {
+        flex-direction: column;
+        /* Kembali ke kolom untuk item fitur individu agar lebih ringkas */
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .featureImage {
+        width: 100%;
+        max-width: 200px;
+        /* Ukuran gambar fitur disesuaikan */
+        height: 120px;
+    }
+
+    .featureTitle {
+        font-size: 1.4rem;
+    }
+
+    .featureDescription {
+        font-size: 1rem;
+    }
+}

@@ -5,6 +5,8 @@ import Home from './components/Home';
 import Information from './components/Information';
 import Checkstatus from './components/CheckStatus';
 import HowToRegistration from './components/HowToRegist';
+import HowToPay from './components/HowToPay';
+import Income from './components/Income';
 // Import index.css secara global, ini sudah dilakukan di main.jsx/index.js
 
 function App() {
@@ -16,6 +18,8 @@ function App() {
         <Information />
         <Checkstatus />
         <HowToRegistration />
+        <HowToPay />
+        <Income />
         {/* Di sini Anda bisa menambahkan komponen lain yang akan tampil saat di-scroll ke bawah */}
         {/* Gunakan class CSS global atau CSS Module untuk section di bawah */}
         <section style={{ backgroundColor: '#ffffff', padding: '5rem 1rem', minHeight: '50vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

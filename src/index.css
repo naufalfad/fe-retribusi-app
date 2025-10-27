@@ -1,49 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
 
-body {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #C8E6C9;
-  color: #1f4529;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
-/* Base styles for responsiveness - bisa disesuaikan */
-.container {
-  max-width: 1200px;
-  /* Lebar maksimal konten */
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-
-/* Utility classes - jika ada yang sering dipakai */
-.flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* Warna dasar (jika Anda ingin mendefinisikannya secara terpusat) */
-:root {
-  --primary-green: #22c55e;
-  /* Contoh warna hijau */
-  --secondary-green: #86efac;
-  /* Contoh hijau muda */
-  --primary-blue: #2563eb;
-  /* Contoh biru */
-  --text-dark: #1f2937;
-  /* Contoh teks gelap */
-  --text-gray: #4b5563;
-  /* Contoh teks abu-abu */
+@layer base {
+  html {
+    font-family: "Poppins", system-ui, sans-serif;
+    scroll-behavior: smooth;
+  }
 }

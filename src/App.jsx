@@ -1,4 +1,5 @@
 // src/App.jsx
+<<<<<<< HEAD
 import React from 'react';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
@@ -7,10 +8,15 @@ import Checkstatus from './components/CheckStatus';
 import HowToRegistration from './components/HowToRegist';
 import HowToPay from './components/HowToPay';
 import Income from './components/Income';
+=======
+import React from "react";
+import Home from "./pages/Home"
+>>>>>>> jek
 // Import index.css secara global, ini sudah dilakukan di main.jsx/index.js
 
 function App() {
   return (
+<<<<<<< HEAD
     <div className="App">
       <Navbar />
       <div style={{ paddingTop: '64px' }}>
@@ -30,6 +36,11 @@ function App() {
         </section>
       </div>
     </div>
+=======
+    <>
+      <Home />
+    </>
+>>>>>>> jek
   );
 }
 

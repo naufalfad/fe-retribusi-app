@@ -2,6 +2,7 @@ import Navbar from "../components/Home/Navbar";
 import HeroText from "../components/Home/HeroText";
 import HomeButton from "../components/Home/HomeButton";
 import Illustration from "../components/Home/Illustration";
+import Information from "../components/Information/Information";
 
 function Home() {
   return (
@@ -23,6 +24,7 @@ function Home() {
           </div>
           <Illustration />
         </section>
+        <Information />
       </main>
     </>
   );

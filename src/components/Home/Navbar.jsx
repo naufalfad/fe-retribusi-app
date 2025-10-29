@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Logo from "../../assets/logo-bogor.png";
+import Logo from "../../assets/logo-svg.svg";
 import ModeIcon from "../../assets/mode-icon.svg"; // ikon SVG hasil export Figma-mu
 
 const STORAGE_KEY = "theme"; // 'light' | 'dark'
@@ -10,7 +10,9 @@ const Navbar = () => {
   // inisialisasi tema saat load
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)")?.matches;
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    )?.matches;
     const initialDark = saved ? saved === "dark" : !!prefersDark;
     document.documentElement.classList.toggle("dark", initialDark);
     setIsDark(initialDark);
@@ -25,7 +27,12 @@ const Navbar = () => {
   };
 
   return (
-    <header className="w-full bg-[white] dark:bg-[black] transition-colors">
+    <header
+      className="
+        sticky top-0 z-50 w-full
+        bg-[white] dark:bg-background-dark transition-colors
+      "
+    >
       {/* gunakan px-[70px] untuk margin kiri-kanan */}
       <div className="flex items-center justify-between px-[70px] py-4">
         {/* kiri: logo + menu */}

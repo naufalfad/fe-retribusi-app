@@ -33,8 +33,8 @@ function HeroText() {
 
       {/* Teks kecil + garis */}
       <div className="mt-6 flex items-start gap-3">
-        <span className="w-[5px] h-[48px] flex-shrink-0 rounded-full bg-[green] dark:bg-green-dark" />
-        <p className="text-[16px] font-normal leading-normal text-[green] dark:text-green-dark max-w-[445px]">
+        <span className="w-[5px] h-[48px] flex-shrink-0 rounded-full bg-[#125735] dark:bg-green-dark" />
+        <p className="text-[16px] font-normal leading-normal text-[#125735] dark:text-green-dark max-w-[445px]">
           Solusi digital untuk pelayanan Retribusi Sampah Daerah secara mudah,
           aman, dan transparan.
         </p>

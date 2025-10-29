@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import Logo from "../../assets/logo-svg.svg";
 import ModeIcon from "../../assets/mode-icon.svg"; // ikon SVG hasil export Figma-mu
+import { useNavigate } from "react-router-dom";
 
 const STORAGE_KEY = "theme"; // 'light' | 'dark'
 
 const Navbar = () => {
   const [isDark, setIsDark] = useState(false);
+  const navigate = useNavigate();
 
   // inisialisasi tema saat load
   useEffect(() => {
@@ -119,6 +121,7 @@ const Navbar = () => {
           {/* tombol login */}
           <button
             type="button"
+            onClick={() => navigate("/login")}
             className="flex w-[87px] h-[38px] px-[21px] py-[2px] justify-center items-center gap-[10px]
                        rounded-[7px] bg-green text-[white] text-[17px] font-normal leading-normal
                        hover:brightness-95 dark:bg-green-dark dark:text-[black] transition"

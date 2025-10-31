@@ -57,14 +57,20 @@ function Information() {
       id="informasi"
       className="bg-background text-green dark:bg-background-dark dark:text-green-dark transition-colors"
     >
-      <div className="px-[70px] max-w-[1200px] mx-auto pt-0 md:pt-0 lg:pt-0 pb-14 md:pb-16 lg:pb-20">
-        <InfoIntro illustrationSrc={illustrationSrc} stats={stats} />
-        <div className="mt-12 md:mt-16 h-px" />
+           {" "}
+      {/* Menghapus max-w-[1200px] mx-auto agar px-[70px] selalu bekerja */}   
+       {" "}
+      <div className="px-[70px] w-full pt-0 md:pt-0 lg:pt-0 pb-14 md:pb-16 lg:pb-20">
+                <InfoIntro illustrationSrc={illustrationSrc} stats={stats} />
+                <div className="mt-12 md:mt-16 h-px" />
+               {" "}
         <GalleryGrid
           title="Galeri dan Berita Kegiatan Terbaru"
           items={gallery}
         />
+             {" "}
       </div>
+         {" "}
     </section>
   );
 }

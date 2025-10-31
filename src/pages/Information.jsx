@@ -1,7 +1,7 @@
 import React from "react";
-import InfoIntro from "./InfoIntro";
-import GalleryGrid from "./GalleryGrid";
-import InfoIllustration from "../../assets/information-illustration.svg";
+import InfoIntro from "../components/Information/InfoIntro";
+import GalleryGrid from "../components/Information/GalleryGrid";
+import InfoIllustration from "../assets/information-illustration.svg";
 
 function Information() {
   // ilustrasi kini dari assets lokal
@@ -62,8 +62,7 @@ function Information() {
        {" "}
       <div className="px-[70px] w-full pt-0 md:pt-0 lg:pt-0 pb-14 md:pb-16 lg:pb-20">
                 <InfoIntro illustrationSrc={illustrationSrc} stats={stats} />
-                <div className="mt-12 md:mt-16 h-px" />
-               {" "}
+                <div className="mt-12 md:mt-16 h-px" />       {" "}
         <GalleryGrid
           title="Galeri dan Berita Kegiatan Terbaru"
           items={gallery}

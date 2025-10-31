@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import {
   ChevronDown,
   ChevronUp,
@@ -118,8 +119,9 @@ const RequirementItem = ({ title, icon: Icon, description }) => (
     className="flex flex-col justify-between p-5 border border-black/10 rounded-xl shadow-sm bg-gray-50/50 h-full flex-grow"
   >
     {/* Ikon dan Judul (di atas) */}
-    <div className="flex items-start space-x-2 mb-2">
-      <Icon className="w-5 h-5 text-[#1C7C54] flex-shrink-0" />
+    <div className="flex items-start space-x-2 mb-1">
+      <Icon className="w-5 h-5 text-[#1C7C54] flex-shrink-0 mr-1" />{" "}
+      {/* Tambah mr-1 pada ikon */}
       {/* SUB JUDUL: Ukuran 14px */}
       <h3 className="text-[14px] font-semibold text-[#1C7C54] leading-tight">
         {title}
@@ -128,7 +130,11 @@ const RequirementItem = ({ title, icon: Icon, description }) => (
 
     {/* Deskripsi (di bawah) */}
     {/* DESKRIPSI: Ukuran 12px */}
-    <p className="text-[12px] text-black/70 leading-normal">{description}</p>
+    <p className="text-[12px] text-black/70 leading-snug">
+      {" "}
+      {/* Mengganti leading-normal menjadi leading-snug */}
+      {description}
+    </p>
   </div>
 );
 

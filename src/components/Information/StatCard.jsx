@@ -1,10 +1,18 @@
 import React from "react";
 
-function StatCard({ value, label, sublabel }) {
-  // Menggunakan dimensi yang diminta: w-215px, h-119px
+function StatCard({ value, label, sublabel, onClick }) {
+  // Gunakan variabel CSS untuk warna hijau
+  const greenColor = "var(--brand, #1C7C54)";
+
   return (
+    // Menambahkan styling untuk interaksi: cursor-pointer, transition, hover:scale, active:scale
     <div
-      className="flex flex-col justify-center p-4 rounded-xl shadow-sm ring-1 ring-outline/30 dark:ring-outline-dark/40"
+      onClick={onClick}
+      className="p-4 rounded-xl shadow-lg flex flex-col justify-center cursor-pointer 
+                 transition duration-300 ease-in-out transform
+                 hover:scale-[1.03] hover:shadow-xl active:scale-[0.98]
+                 border border-black/10 dark:border-white/10 // Mengatasi outline putih
+                 "
       style={{
         width: "215px",
         height: "119px",
@@ -13,7 +21,10 @@ function StatCard({ value, label, sublabel }) {
       }}
     >
       {/* Nilai Utama */}
-      <h3 className="text-[28px] font-extrabold text-brand dark:text-brand-dark">
+      <h3
+        className="text-[28px] font-extrabold text-brand dark:text-brand-dark"
+        style={{ color: greenColor }}
+      >
         {value}
       </h3>
       {/* Label (wajib retribusi...) */}

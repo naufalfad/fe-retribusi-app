@@ -10,7 +10,7 @@ function Illustration() {
           pointer-events-none select-none
           w-[720px] sm:w-[850px] lg:w-[950px] xl:w-[1000px] h-auto
           drop-shadow-lg dark:drop-shadow-[0_10px_30px_rgba(0,0,0,0.45)]
-          -translate-y-8 lg:-translate-y-10 xl:-translate-y-14
+          -translate-y-2 md:-translate-y-4 lg:-translate-y-12 xl:-translate-y-18 2xl:-translate-y-28
           -mr-0 lg:-mr-[60px]
           transition-all duration-500 ease-in-out
         "

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { FaHome, FaUser, FaPhone, FaMapMarkerAlt, FaIdCard, } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { FaHome, FaUser, FaPhone, FaMapMarkerAlt, FaIdCard, FaMoneyBill, } from "react-icons/fa";
 import { MapContainer, TileLayer, Marker, useMapEvents, } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -22,30 +23,167 @@ function ClickableMap({ setPosition }) {
 }
 
 const Register = () => {
-    const [jenisRetribusi, setJenisRetribusi] = useState("");
-    const [layanan, setLayanan] = useState("");
+    const API_BASE = "http://localhost:3000/api";
+    const [jenisList, setJenisList] = useState([]);
+    const [kategoriList, setKategoriList] = useState([]);
+
+    const [selectedJenis, setSelectedJenis] = useState("");
+    const [selectedKategori, setSelectedKategori] = useState("");
+    const [tarif, setTarif] = useState("");
+    const [showNib, setShowNib] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const [form, setForm] = useState({
+        nik_wr: "",
+        nama_wr: "",
+        no_hp_wr: "",
+        provinsi_wr: "",
+        kabupaten_wr: "",
+        kecamatan_wr: "",
+        kelurahan_wr: "",
+        alamat_wr: "",
+        nib_wr: "",
+        password_wr: "",
+
+    });
+
     const [position, setPosition] = useState({
         lat: -6.597146, // Default: Bogor
         lng: 106.806039,
     });
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        const data = {
-            jenisRetribusi,
-            layanan,
-            latitude: position.lat,
-            longitude: position.lng,
+    useEffect(() => {
+        const fetchJenis = async () => {
+            try {
+                const res = await axios.get(`${API_BASE}/jenis-retribusi/getAlljenis`);
+                setJenisList(res.data.data);
+            } catch (err) {
+                console.error("Gagal ambil jenis:", err);
+            }
         };
+        fetchJenis();
+    }, []);
 
-        console.log("Data terkirim:", data);
-        alert(
-            `Registrasi berhasil!\nKoordinat: ${position.lat.toFixed(
-                6
-            )}, ${position.lng.toFixed(6)}`
-        );
+    useEffect(() => {
+        if (!selectedJenis) {
+            setKategoriList([]);
+            setTarif("");
+            return;
+        }
+
+        const fetchKategori = async () => {
+            try {
+                const res = await axios.get(`${API_BASE}/kategori-retribusi/getKategoriByJenis?id_jenis=${selectedJenis}`);
+                setKategoriList(res.data.data);
+            } catch (err) {
+                console.error("Gagal ambil kategori", err);
+            }
+        };
+        fetchKategori();
+
+        const jenisObj = jenisList.find(j => j.id_jenis == selectedJenis);
+        if (jenisObj && jenisObj.nama_jenis.toLowerCase() !== "rumah tangga") {
+            setShowNib(true);
+        } else {
+            setShowNib(false);
+        }
+    }, [selectedJenis]);
+
+    useEffect(() => {
+        if (selectedJenis && selectedKategori) {
+            axios
+                .get(`${API_BASE}/wajib-retribusi/tarifWr?id_jenis=${selectedJenis}&id_kategori=${selectedKategori}`)
+                .then((res) => {
+                    const tarifValue = res.data.data?.total_tarif || 0;
+                    setTarif(tarifValue);
+                })
+                .catch((err) => setTarif(""));
+        }
+    }, [selectedJenis, selectedKategori]);
+
+    const handleChange = (e) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
     };
+
+    const validateForm = () => {
+        if (!selectedJenis) return "Silahkan pilih jenis retribusi";
+        if (!selectedKategori) return "Silahkan pilih kategori retribusi";
+        if (!form.nama_wr) return "Silahkan isi nama wajib retribusi";
+        if (!form.nik_wr) return "Silahkan isi NIK";
+        if (!form.provinsi_wr) return "Provinsi harus di isi";
+        if (!form.kabupaten_wr) return "Kabupaten harus di isi";
+        if (!form.kecamatan_wr) return "Kecamatan harus di isi";
+        if (!form.kelurahan_wr) return "Kelurahan harus di isi";
+        if (!form.alamat_wr) return "Alamat harus di isi";
+        if (!form.no_hp_wr) return "Nomor whatsapp harus di isi";
+        if (!/^08\d{8,13}$/.test(form.no_hp_wr))
+            return "Nomor Hp harus diawali 08 dan panjang 10-15 digit";
+
+        if (showNib && !form.nib_wr) return "Silahkan isi NIB";
+        return null;
+    }
+
+    const handleNext = (e) => {
+        e.preventDefault();
+        const errorMsg = validateForm();
+        if (errorMsg) {
+            alert(errorMsg);
+            return;
+        }
+
+        const payload = {
+            id_jenis: selectedJenis,
+            id_kategori: selectedKategori,
+            ...form,
+            lokasi_wr: `Lat: ${position.lat}, Lng: ${position.lng}`,
+            total_tarif: tarif,
+        };
+        localStorage.setItem("pendingRegister", JSON.stringify(payload));
+
+        window.location.href = "/password"
+    };
+
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     const errorMsg = validateForm();
+    //     if (errorMsg) {
+    //         alert(errorMsg);
+    //         return;
+    //     }
+
+    //     setLoading(true);
+    //     try {
+    //         const payload = {
+    //             id_jenis: selectedJenis,
+    //             id_kategori: selectedKategori,
+    //             ...form,
+    //             lokasi_wr: `Lat: ${position.lat}, Lng: ${posotion.lng}`,
+    //         };
+
+    //         const res = await axios.post(`${API_BASE}/wajib-retribusi/registerWr`, payload);
+    //         alert(res.data.message || "Registrasi Berhasil!");
+    //         setForm({
+    //             nama_wr: "",
+    //             nik_wr: "",
+    //             nib_wr: "",
+    //             provinsi_wr: "",
+    //             kabupaten_wr: "",
+    //             kecamatan_wr: "",
+    //             kelurahan_wr: "",
+    //             alamat_wr: "",
+    //             no_hp_wr: "",
+    //             password_wr: "",
+    //         });
+    //         setSelectedJenis("");
+    //         setSelectedKategori("");
+    //         setTarif("");
+    //     } catch (error) {
+    //         console.error("Error register:", error);
+    //         alert("Gagal mendaftar. Coba lagi");
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
     return (
         <div className="flex flex-col md:flex-row min-h-screen font-poppins">
@@ -69,20 +207,43 @@ const Register = () => {
                         Isi formulir dengan benar dan pastikan tidak ada yang salah saat mengisi
                     </p>
 
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                    <form onSubmit={handleNext} className="space-y-5">
                         {/* Jenis Wajib Retribusi */}
                         <div>
                             <p className="text-sm text-gray-600 mb-1">Jenis Wajib Retribusi</p>
                             <div className="border border-green-700 rounded-lg flex items-center px-4 py-3">
                                 <FaHome className="text-green-700 mr-3" />
                                 <select
-                                    value={jenisRetribusi}
-                                    onChange={(e) => setJenisRetribusi(e.target.value)}
+                                    value={selectedJenis}
+                                    onChange={(e) => setSelectedJenis(e.target.value)}
                                     className="flex-1 outline-none bg-transparent text-gray-700"
                                 >
                                     <option value="">Pilih Jenis Wajib Retribusi</option>
-                                    <option value="rumah_tangga">Rumah Tangga</option>
-                                    <option value="usaha">Usaha</option>
+                                    {jenisList.map((j) => (
+                                        <option key={j.id_jenis} value={j.id_jenis}>
+                                            {j.nama_jenis}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+
+                        {/* Kategori */}
+                        <div>
+                            <p className="text-sm text-gray-600 mb-1">Kategori</p>
+                            <div className="border border-green-700 rounded-lg flex items-center px-4 py-3">
+                                <FaHome className="text-green-700 mr-3" />
+                                <select
+                                    value={selectedKategori}
+                                    onChange={(e) => setSelectedKategori(e.target.value)}
+                                    className="flex-1 outline-none bg-transparent text-gray-700"
+                                >
+                                    <option value="">Pilih Kategori</option>
+                                    {kategoriList.map((k) => (
+                                        <option key={k.id_kategori} value={k.id_kategori}>
+                                            {k.nama_kategori}
+                                        </option>
+                                    ))}
                                 </select>
                             </div>
                         </div>
@@ -96,17 +257,36 @@ const Register = () => {
                                 <FaIdCard className="text-green-700 mr-3" />
                                 <input
                                     type="text"
+                                    name="nik_wr"
                                     placeholder="NIK"
+                                    onChange={handleChange}
                                     className="flex-1 outline-none text-gray-700"
                                 />
                             </div>
+
+                            {/* NIB */}
+                            {showNib && (
+                                <div className="border border-green-700 rounded-lg flex items-center px-4 py-3">
+                                    <FaIdCard className="text-green-700 mr-3" />
+                                    <input
+                                        type="text"
+                                        name="nib_wr"
+                                        placeholder="NIB (Nomor Izin Berusaha)"
+                                        value={form.nib_wr}
+                                        onChange={handleChange}
+                                        className="flex-1 outline-none text-gray-700"
+                                    />
+                                </div>
+                            )}
 
                             {/* Nama */}
                             <div className="border border-green-700 rounded-lg flex items-center px-4 py-3">
                                 <FaUser className="text-green-700 mr-3" />
                                 <input
                                     type="text"
+                                    name="nama_wr"
                                     placeholder="Nama Lengkap"
+                                    onChange={handleChange}
                                     className="flex-1 outline-none text-gray-700"
                                 />
                             </div>
@@ -116,7 +296,57 @@ const Register = () => {
                                 <FaPhone className="text-green-700 mr-3" />
                                 <input
                                     type="text"
+                                    name="no_hp_wr"
                                     placeholder="Nomor WhatsApp"
+                                    onChange={handleChange}
+                                    className="flex-1 outline-none text-gray-700"
+                                />
+                            </div>
+
+                            {/* Provinsi */}
+                            <div className="border border-green-700 rounded-lg flex items-center px-4 py-3">
+                                <FaMapMarkerAlt className="text-green-700 mr-3" />
+                                <input
+                                    type="text"
+                                    name="provinsi_wr"
+                                    placeholder="Provinsi"
+                                    onChange={handleChange}
+                                    className="flex-1 outline-none text-gray-700"
+                                />
+                            </div>
+
+                            {/* Kabupaten */}
+                            <div className="border border-green-700 rounded-lg flex items-center px-4 py-3">
+                                <FaMapMarkerAlt className="text-green-700 mr-3" />
+                                <input
+                                    type="text"
+                                    name="kabupaten_wr"
+                                    placeholder="Kabupaten"
+                                    onChange={handleChange}
+                                    className="flex-1 outline-none text-gray-700"
+                                />
+                            </div>
+
+                            {/* Kecamatan */}
+                            <div className="border border-green-700 rounded-lg flex items-center px-4 py-3">
+                                <FaMapMarkerAlt className="text-green-700 mr-3" />
+                                <input
+                                    type="text"
+                                    name="kecamatan_wr"
+                                    placeholder="Kecamatan"
+                                    onChange={handleChange}
+                                    className="flex-1 outline-none text-gray-700"
+                                />
+                            </div>
+
+                            {/* Kelurahan */}
+                            <div className="border border-green-700 rounded-lg flex items-center px-4 py-3">
+                                <FaMapMarkerAlt className="text-green-700 mr-3" />
+                                <input
+                                    type="text"
+                                    name="kelurahan_wr"
+                                    placeholder="Kelurahan"
+                                    onChange={handleChange}
                                     className="flex-1 outline-none text-gray-700"
                                 />
                             </div>
@@ -126,6 +356,8 @@ const Register = () => {
                                 <FaMapMarkerAlt className="text-green-700 mr-3 mt-1" />
                                 <textarea
                                     placeholder="Alamat Lengkap"
+                                    name="alamat_wr"
+                                    onChange={handleChange}
                                     rows="2"
                                     className="flex-1 outline-none text-gray-700 resize-none"
                                 ></textarea>
@@ -133,9 +365,9 @@ const Register = () => {
                         </div>
 
                         {/* Layanan */}
-                        <p className="text-sm text-gray-600 border-t pt-3">Layanan</p>
+                        <p className="text-sm text-gray-600 border-t pt-3">Total Tarif Bulanan</p>
                         <div className="space-y-4">
-                            <div className="border border-green-700 rounded-lg flex items-center px-4 py-3">
+                            {/* <div className="border border-green-700 rounded-lg flex items-center px-4 py-3">
                                 <FaHome className="text-green-700 mr-3" />
                                 <select
                                     value={layanan}
@@ -146,6 +378,20 @@ const Register = () => {
                                     <option value="pengangkutan">Pengangkutan Sampah</option>
                                     <option value="kebersihan">Kebersihan Lingkungan</option>
                                 </select>
+                            </div> */}
+
+                            {/* TARIF */}
+                            <div className="border border-green-700 rounded-lg flex items-center px-4 py-3 bg-gray-100">
+                                <FaMoneyBill className="text-green-700 mr-3" />
+                                <input
+                                    type="text"
+                                    placeholder="Tarif (otomatis)"
+                                    value={tarif ? `Rp ${Number(tarif).toLocaleString("id-ID")}`
+                                        : "Tarif Belum Tersedia"
+                                    }
+                                    readOnly
+                                    className="flex-1 outline-none bg-transparent text-gray-700"
+                                />
                             </div>
 
                             {/* Titik Pemungutan */}
@@ -191,12 +437,13 @@ const Register = () => {
                             </div>
                         </div>
 
-                        {/* Tombol */}
+                        {/* Tombol Lanjutkan */}
                         <button
-                            type="submit"
-                            className="w-full bg-[#0C513F] text-white py-3 rounded-lg font-semibold hover:bg-green-900 transition mt-6"
+                            onClick={handleNext}
+                            disabled={loading}
+                            className="w-full bg-[#0C513F] text-white py-3 rounded-lg font-semibold hover:bg-green-900 transition mt-6 disabled:opacity-70"
                         >
-                            Daftar Retribusi
+                            {loading ? "Menyimpan..." : "Lanjutkan"}
                         </button>
                     </form>
                 </div>

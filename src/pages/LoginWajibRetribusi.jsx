@@ -1,9 +1,50 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { FaUser, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import loginIllustration from '../assets/login-illustration.png';
 
 const LoginWajibRetribusi = () => {
+    const [nikOrNib, setNikorNib] = useState("");
+    const [password_wr, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const API_BASE = "http://localhost:3000/api";
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
+        if (!nikOrNib || !password_wr) {
+            alert("Silahkan isi NIK/NIB dan Password!");
+            return;
+        }
+
+        try {
+            setLoading(true);
+
+            const res = await axios.post(`${API_BASE}/auth/loginWr`, {
+                nikOrNib,
+                password_wr
+            });
+
+            const { token, data } = res.data;
+
+            localStorage.setItem("authToken", token);
+            localStorage.setItem("userData", JSON.stringify(data));
+
+            alert("Login Berhasil!");
+            window.location.href = "/";
+        } catch (err) {
+            console.error("Login error:", err);
+            if (err.response && err.response.data.message) {
+                alert(err.response.data.message);
+            } else {
+                alert("Login gagal. Periksa kembali data anda");
+            }
+        } finally {
+            setLoading(false)
+        }
+    };
 
     return (
         <div className="flex flex-col md:flex-row min-h-screen font-poppins">
@@ -26,13 +67,15 @@ const LoginWajibRetribusi = () => {
                 </h2>
                 <p className="text-[#387B56] mb-8">di Aplikasi Retribusi Sampah</p>
 
-                <form className="space-y-4">
+                <form className="space-y-4" onSubmit={handleLogin}>
                     {/* NIK / NIB */}
                     <div className="border border-green-700 rounded-lg flex items-center px-4 py-3">
                         <FaUser className="text-green-700 mr-3" />
                         <input
                             type="text"
                             placeholder="NIK/NIB"
+                            value={nikOrNib}
+                            onChange={(e) => setNikorNib(e.target.value)}
                             className="flex-1 outline-none text-gray-700"
                         />
                     </div>
@@ -43,6 +86,8 @@ const LoginWajibRetribusi = () => {
                         <input
                             type={showPassword ? "text" : "password"}
                             placeholder="Password"
+                            value={password_wr}
+                            onChange={(e) => setPassword(e.target.value)}
                             className="flex-1 outline-none text-gray-700"
                         />
                         <button
@@ -68,9 +113,10 @@ const LoginWajibRetribusi = () => {
                     {/* Tombol Login */}
                     <button
                         type="submit"
+                        disabled={loading}
                         className="w-full bg-[#0C513F] text-white py-3 rounded-lg font-semibold hover:bg-green-900 transition"
                     >
-                        Login
+                        {loading ? "Memproses..." : "Login"}
                     </button>
 
                     {/* Link Daftar */}

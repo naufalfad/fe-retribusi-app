@@ -2,9 +2,12 @@ import React from "react";
 import InfoIntro from "../components/Information/InfoIntro";
 import GalleryGrid from "../components/Information/GalleryGrid";
 import InfoIllustration from "../assets/information-illustration.svg";
+import KerjaBakti from "../assets/kerja-bakti.jpg";
+import SensorPolusiUdara from "../assets/sensor.png";
+import HukumLimbah from "../assets/limbah.jpg";
+import Incenerator from "../assets/incenerator.jpg";
 
 function Information() {
-  // ilustrasi kini dari assets lokal
   const illustrationSrc = InfoIllustration;
 
   const stats = [
@@ -27,28 +30,24 @@ function Information() {
 
   const gallery = [
     {
-      image:
-        "https://images.unsplash.com/photo-1520975922284-9bfa9285a832?q=80&w=1200&auto=format&fit=crop",
+      image: KerjaBakti,
       title: "Sosialisasi Bogor Bersih",
-      desc: "Program inisiasi Kabupaten Bogor untuk merubah paradigma kebersihan.",
+      desc: "Bogor bersih adalah suatu program inisiasi Kabupaten Bogor untuk merubah paradigma kebersihan.",
     },
     {
-      image:
-        "https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1200&auto=format&fit=crop",
+      image: SensorPolusiUdara,
       title: "Sensor Polusi Udara",
       desc: "Implementasi sensor polusi udara di beberapa titik strategis.",
     },
     {
-      image:
-        "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?q=80&w=1200&auto=format&fit=crop",
+      image: Incenerator,
       title: "Uji Coba Incenerator",
-      desc: "Penerapan incenerator rendah emisi sebagai solusi pemusnahan.",
+      desc: "DLH Bogor menerapkan program incenerator tanpa polusi udara sebagai komitmen program pemusnahan sampah dengan teknologi hijau.",
     },
     {
-      image:
-        "https://images.unsplash.com/photo-1555374018-13a8994ab246?q=80&w=1200&auto=format&fit=crop",
+      image: HukumLimbah,
       title: "Penegakan Hukum Limbah",
-      desc: "Langkah DLH dalam penegakan pengelolaan limbah.",
+      desc: "Langkah DLH dalam melaksanakan penegakan hukum pengelolaan limbah.",
     },
   ];
 
@@ -57,19 +56,14 @@ function Information() {
       id="informasi"
       className="bg-background text-green dark:bg-background-dark dark:text-green-dark transition-colors"
     >
-           {" "}
-      {/* Menghapus max-w-[1200px] mx-auto agar px-[70px] selalu bekerja */}   
-       {" "}
-      <div className="px-[70px] w-full pt-0 md:pt-0 lg:pt-0 pb-14 md:pb-16 lg:pb-20">
-                <InfoIntro illustrationSrc={illustrationSrc} stats={stats} />
-                <div className="mt-12 md:mt-16 h-px" />       {" "}
+      {/* Hilangkan max-w mx-auto supaya padding horizontal konsisten */}
+      <div className="w-full px-[70px] pt-0 pb-14 lg:pb-20">
+        <InfoIntro illustrationSrc={illustrationSrc} stats={stats} />
         <GalleryGrid
           title="Galeri dan Berita Kegiatan Terbaru"
           items={gallery}
         />
-             {" "}
       </div>
-         {" "}
     </section>
   );
 }

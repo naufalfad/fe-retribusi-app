@@ -6,11 +6,10 @@ import YearSelect from "../components/Pendapatan/YearSelect";
 
 const YEARS = [2025];
 
-const cleanAndConvert = (str) => {
-  if (typeof str === "undefined" || str === null) return 0;
-  if (typeof str === "number") return str;
-  const cleanString = String(str).replace(/\./g, "");
-  return Number(cleanString) || 0;
+const cleanAndConvert = (v) => {
+  if (v === undefined || v === null) return 0;
+  if (typeof v === "number") return v;
+  return Number(String(v).replace(/\./g, "")) || 0;
 };
 
 export default function Pendapatan() {
@@ -24,43 +23,41 @@ export default function Pendapatan() {
     targetYear: 0,
   });
 
-  const fetchData = async (y) => {
-    setLoading(true);
-    try {
-      const res = await fetch(`http://localhost:3000/api/revenue?year=${y}`);
-
-      if (!res.ok) {
-        throw new Error(`Failed to fetch data, status: ${res.status}`);
-      }
-
-      const json = await res.json();
-
-      const rawSeries = Array.isArray(json.series) ? json.series : [];
-
-      const cleanSeries = rawSeries.map((item) => ({
-        month: item.month,
-        value: cleanAndConvert(item.value ?? item.total),
-      }));
-
-      setSeries(cleanSeries);
-
-      setSummary({
-        monthRevenue: cleanAndConvert(json.monthRevenue),
-        yearRevenue: cleanAndConvert(json.yearRevenue),
-        totalRevenue: cleanAndConvert(json.totalRevenue),
-        targetYear: cleanAndConvert(json.targetYear),
-      });
-    } catch (err) {
-      console.error("❌ error fetch pendapatan:", err);
-      setSeries([]);
-      setSummary((prev) => ({ ...prev, monthRevenue: 0, yearRevenue: 0 }));
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchData(year);
+    (async () => {
+      setLoading(true);
+      try {
+        const r = await fetch(`http://localhost:3000/api/revenue?year=${year}`);
+        if (!r.ok) throw new Error(`status ${r.status}`);
+        const j = await r.json();
+
+        const arr = Array.isArray(j.series) ? j.series : [];
+        setSeries(
+          arr.map((it) => ({
+            month: it.month,
+            value: cleanAndConvert(it.value ?? it.total),
+          }))
+        );
+
+        setSummary({
+          monthRevenue: cleanAndConvert(j.monthRevenue),
+          yearRevenue: cleanAndConvert(j.yearRevenue),
+          totalRevenue: cleanAndConvert(j.totalRevenue),
+          targetYear: cleanAndConvert(j.targetYear),
+        });
+      } catch (e) {
+        console.error(e);
+        setSeries([]);
+        setSummary((p) => ({
+          ...p,
+          monthRevenue: 0,
+          yearRevenue: 0,
+          totalRevenue: 0,
+        }));
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, [year]);
 
   const realizationPct = useMemo(() => {
@@ -73,75 +70,137 @@ export default function Pendapatan() {
 
   return (
     <section className="bg-white">
-      {/* Container utama dengan padding 70px. Menggunakan max-w-full sebagai guardrail. */}
-      <div className="w-full max-w-full pt-10 md:pt-12 lg:pt-14 pb-14 md:pb-16 lg:pb-20 px-[70px]">
-        {/* Heading */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-5xl font-extrabold text-[#155E3C]">
+      {/* padding kiri/kanan 70px persis */}
+      <div className="px-[70px] pt-12 pb-20">
+        {/* title sesuai desain */}
+        <div className="text-center mb-10">
+          <h1 className="text-[56px] font-extrabold text-[#155E3C] leading-[1.1]">
             Progress Pendapatan Daerah
           </h1>
-          <p className="mt-3 text-black/70 max-w-2xl mx-auto">
+          <p className="mt-3 text-[16.5px] text-black/70 max-w-[680px] mx-auto leading-relaxed">
             Berikut ini adalah grafik data yang menunjukkan progress pendapatan
             daerah dari tahun ke tahun
           </p>
         </div>
 
-        {/* grid utama */}
-        <div className="grid lg:grid-cols-[1fr_360px] gap-7">
-          {/* Kolom Kiri: Chart */}
-          <div className="rounded-[24px] border border-black/10 shadow-soft p-5 md:p-6 relative">
-            <div className="flex items-center justify-between mb-3">
-              <div className="text-sm text-black/60">Tahun {year}</div>
+        {/* GRID PRESISI: 970 | 30 | 310  ; Total Height: 652px */}
+        <div
+          className="mx-auto"
+          style={{
+            width: 970 + 30 + 310, // = 1310px
+            display: "grid",
+            gridTemplateColumns: "970px 30px 310px",
+            // Ringkasan (3 KPI) dan Donut Card
+            // 53 (Tahun) | 15 (Gap) | 360 (Ringkasan 3 KPI) | 15 (Gap) | 209 (Donut Card)
+            // Total height: 53 + 15 + 360 + 15 + 209 = 652px
+            gridTemplateRows: "53px 15px 360px 15px 209px",
+          }}
+        >
+          {/* CARD GRAFIK 970×652 (span 5 baris) */}
+          <div
+            style={{
+              gridColumn: "1 / span 1",
+              gridRow: "1 / span 5",
+              width: 970,
+              height: 652,
+              borderRadius: 15,
+              background: "#fff",
+              border: "1px solid rgba(0,0,0,0.10)",
+              boxShadow: "0 6px 24px rgba(0,0,0,0.06)",
+              padding: 20,
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <div className="mb-2 text-sm text-black/60">Tahun {year}</div>
+            <div className="flex-1">
+              <RevenueChart
+                data={series}
+                loading={loading}
+                height={600} // 652 - padding vertikal
+                yLabel="Pendapatan (Rp)"
+                showTiltedTicks
+              />
             </div>
-            <RevenueChart data={series} loading={loading} />
           </div>
 
-          {/* Kolom Kanan: Panel Kontrol dan Ringkasan */}
-          <div>
-            {/* Pilih Tahun */}
+          {/* SELECT TAHUN 310×53 */}
+          <div
+            style={{
+              gridColumn: "3 / span 1",
+              gridRow: "1 / span 1",
+              width: 310,
+              height: 53,
+            }}
+          >
             <YearSelect
               value={year}
               onChange={setYear}
               years={YEARS}
-              className="w-full max-w-none mb-4"
+              className="w-full h-full"
             />
+          </div>
 
-            {/* Ringkasan */}
-            <div className="grid gap-6 mt-0">
-              <div className="rounded-[20px] border border-black/10 shadow-soft p-5">
-                <div className="text-base font-semibold text-[#155E3C]">
-                  Ringkasan
-                </div>
-                <div className="mt-5 space-y-4">
-                  <KPIWidget
-                    label="Pendapatan Bulan ini"
-                    value={summary.monthRevenue}
-                    accent="red"
-                    barPct={44}
-                  />
-                  <KPIWidget
-                    label="Pendapatan Tahun ini"
-                    value={summary.yearRevenue}
-                    accent="amber"
-                    barPct={86}
-                  />
-                  <KPIWidget
-                    label="Total Pendapatan"
-                    value={summary.totalRevenue}
-                    accent="green"
-                    barPct={100}
-                  />
-                </div>
-              </div>
-
-              <DonutCard
-                title="Target dan Realisasi"
-                target={summary.targetYear}
-                realized={summary.yearRevenue}
-                percent={realizationPct}
-                note="+1.5% MoM"
+          {/* CARD RINGKASAN - Tanpa judul "Ringkasan" */}
+          <div
+            style={{
+              gridColumn: "3 / span 1",
+              gridRow: "3 / span 1",
+              width: 310,
+              height: 255, // dikurangi agar tidak kepanjangan
+              borderRadius: 15,
+              background: "#fff",
+              border: "1px solid rgba(0,0,0,0.10)",
+              boxShadow: "0 6px 24px rgba(0,0,0,0.06)",
+            }}
+            className="p-3 flex flex-col justify-center"
+          >
+            <div className="space-y-3">
+              <KPIWidget
+                label="Pendapatan Bulan ini"
+                value={summary.monthRevenue}
+                accent="red"
+                barPct={44}
+              />
+              <KPIWidget
+                label="Pendapatan Tahun ini"
+                value={summary.yearRevenue}
+                accent="amber"
+                barPct={86}
+              />
+              <KPIWidget
+                label="Total Pendapatan"
+                value={summary.totalRevenue}
+                accent="green"
+                barPct={100}
               />
             </div>
+          </div>
+
+          {/* DONUT 310×209 (Diubah menjadi 209px) */}
+          <div
+            className="p-4"
+            style={{
+              gridColumn: "3 / span 1",
+              gridRow: "5 / span 1",
+              width: 310,
+              height: 209, // Diubah menjadi 209px
+              borderRadius: 15,
+              background: "#fff",
+              border: "1px solid rgba(0,0,0,0.10)",
+              boxShadow: "0 6px 24px rgba(0,0,0,0.06)",
+              overflow: "hidden",
+            }}
+          >
+            <DonutCard
+              title="Target dan Realisasi"
+              percent={realizationPct}
+              target={summary.targetYear}
+              realized={summary.yearRevenue}
+              remainingPct={100 - realizationPct}
+              // Data mock untuk tanggal update
+              updatedDate="15 Oktober 2025"
+            />
           </div>
         </div>
       </div>

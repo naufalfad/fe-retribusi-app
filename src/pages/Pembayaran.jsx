@@ -1,3 +1,4 @@
+// src/pages/Pembayaran.jsx
 import React, { useState } from "react";
 import {
   CheckCircle,
@@ -9,7 +10,7 @@ import {
   Smartphone,
 } from "lucide-react";
 
-// Data Langkah-Langkah Pembayaran Via QRIS
+/* ---------- DATA ---------- */
 const QRIS_STEPS = [
   {
     id: 1,
@@ -42,18 +43,16 @@ const QRIS_STEPS = [
     id: 5,
     title: "Cek Status Pembayaran",
     description:
-      "Masuk ke dalam aplikasi dan cek status pembayaran menjadi lunas setelah beberapa menit melakukan pembayaran.",
+      "Masuk ke dalam aplikasi dan cek status pembayaran menjadi lunas beberapa menit setelah pembayaran.",
     icon: Smartphone,
   },
 ];
 
-// Data Langkah-Langkah Pembayaran Langsung (Dummy)
 const PETUGAS_STEPS = [
   {
     id: 1,
     title: "Datangi Lokasi Pembayaran",
-    description:
-      "Datangi lokasi pembayaran retribusi resmi yang telah ditentukan.",
+    description: "Datangi lokasi pembayaran retribusi resmi yang ditentukan.",
     icon: MapPin,
   },
   {
@@ -65,8 +64,7 @@ const PETUGAS_STEPS = [
   {
     id: 3,
     title: "Lakukan Pembayaran",
-    description:
-      "Lakukan pembayaran tunai sesuai nominal tagihan yang tertera.",
+    description: "Lakukan pembayaran tunai sesuai nominal tagihan.",
     icon: CreditCard,
   },
   {
@@ -77,138 +75,122 @@ const PETUGAS_STEPS = [
   },
 ];
 
-// Komponen Card Langkah Pembayaran
-const StepCard = ({ id, title, description, icon: Icon, isActive }) => {
-  // Style konsisten dengan desain mockup
-  const greenColor = "#1C7C54";
-  const activeBg = isActive ? "bg-[#1C7C54]" : "bg-white";
-  const activeText = isActive ? "text-white" : "text-black/80";
-  const activeBorder = isActive ? "border-[#1C7C54]" : "border-black/10";
-  const activeNumber = isActive
-    ? "text-white border-white"
-    : "text-[#1C7C54] border-[#1C7C54]";
+/* ---------- CARD LANGKAH ---------- */
+const StepCard = ({ id, title, description, icon: Icon }) => {
+  const green = "#1C7C54";
 
   return (
-    <div
-      // Menggunakan flex-shrink agar kartu menyesuaikan diri dalam batas 70px
-      className={`p-5 pt-7 border rounded-lg shadow-md transition duration-300 flex flex-col relative flex-shrink w-full md:w-[18%] lg:w-[18%] ${activeBg} ${activeBorder} min-h-[135px]`}
-    >
-      {/* Nomor Langkah */}
-      <div
-        className={`absolute top-0 left-5 transform -translate-y-1/2 w-8 h-8 flex items-center justify-center font-bold rounded-full border-2 text-sm ${activeNumber} ${activeBg}`}
-      >
+    <div className="relative rounded-[12px] border border-outline dark:border-outline-dark bg-fillKolom dark:bg-fillKolom-dark p-5 shadow-[0_2px_0_rgba(0,0,0,0.03)]">
+      {/* Badge nomor */}
+      <div className="absolute -top-3 border border-white border-[2px] left-5 w-8 h-8 rounded-full bg-green dark:bg-green-dark text-white dark:text-black text-sm font-normal flex items-center justify-center shadow-sm">
         {id}
       </div>
 
-      <div className="flex items-start mb-1">
-        {/* Ikon */}
-        <Icon
-          className={`w-5 h-5 mr-3 flex-shrink-0 mt-0.5 ${activeText}`}
-          style={{ color: activeText === "text-white" ? "white" : greenColor }}
-        />
-
-        {/* Judul */}
-        <span className={`font-semibold text-base leading-snug ${activeText}`}>
-          {title}
-        </span>
+      <div className="flex items-start gap-3">
+        <Icon className="w-[24px] h-[24px] mt-[2px] flex-shrink-0 text-green dark:text-green-dark" />
+        <div>
+          <h4 className="text-[16px] font-semibold text-green dark:text-green-dark">
+            {title}
+          </h4>
+          <p className="mt-2 text-[13px] leading-snug text-black dark:text-black-dark">
+            {description}
+          </p>
+        </div>
       </div>
-
-      {/* Deskripsi */}
-      <p className={`mt-1 text-sm ${activeText} opacity-80 leading-tight`}>
-        {description}
-      </p>
     </div>
   );
 };
 
+/* ---------- PAGE ---------- */
 export default function Pembayaran() {
-  const [activeMethod, setActiveMethod] = useState("QRIS"); // QRIS | PETUGAS
-
-  const activeSteps = activeMethod === "QRIS" ? QRIS_STEPS : PETUGAS_STEPS;
-  const activeTitle =
+  const [activeMethod, setActiveMethod] = useState("QRIS");
+  const steps = activeMethod === "QRIS" ? QRIS_STEPS : PETUGAS_STEPS;
+  const title =
     activeMethod === "QRIS"
       ? "Langkah Pembayaran Melalui QRIS"
       : "Langkah Pembayaran Langsung ke Petugas";
 
-  // Style yang Konsisten
-  const greenColor = "#1C7C54";
+  const green = "#1C7C54";
 
   return (
-    <section className="bg-white min-h-screen">
-      {/* Wrapper utama: Menghapus px-[70px] di sini */}
-      <div className="w-full pt-10 md:pt-12 lg:pt-14 pb-14 md:pb-16 lg:pb-20">
-        {/* Pembungkus Konten: Menetapkan margin 70px di kiri dan kanan */}
+    <section className="bg-background dark:bg-background-dark min-h-screen">
+      <div className="w-full pt-10 md:pt-12 lg:pt-14 pb-16">
         <div className="px-[70px] w-full">
-          {/* Header Utama */}
-          <div className="text-center mb-12">
-            <h1
-              className="text-4xl md:text-5xl lg:text-6xl font-extrabold"
-              style={{ color: greenColor }}
-            >
+          {/* Header */}
+          <div className="text-center mb-10">
+            <h1 className="text-[60px] md:text-6xl font-bold text-green dark:text-green-dark">
               Cara Membayar
             </h1>
-            <p className="mt-3 text-lg font-medium text-black/70">
+            <p className="mt-3 text-[16px] text-black dark:text-black-dark">
               Pilih jalur pembayaran yang paling nyaman. Ikuti langkahnya satu
               per satu hingga transaksi tercatat di sistem.
             </p>
           </div>
 
-          {/* Tombol Pilihan Metode Pembayaran */}
-          <div className="flex justify-center space-x-4 mb-12">
+          {/* Tombol metode */}
+          <div className="flex justify-center gap-4 mb-12">
             <button
               onClick={() => setActiveMethod("QRIS")}
-              className={`py-2 px-6 rounded-full font-semibold transition duration-200 ${
+              className={`h-11 px-6 rounded-[10px] text-[15px] font-normal transition ${
                 activeMethod === "QRIS"
-                  ? "bg-[#1C7C54] text-white shadow-lg"
-                  : "bg-white text-[#1C7C54] border border-[#1C7C54] hover:bg-gray-50"
+                  ? "bg-green dark:bg-green-dark text-white dark:text-black shadow-md"
+                  : "bg-green dark:bg-green-dark text-white dark:text-black hover:bg-[#0AA868] dark:hover:bg-green"
               }`}
             >
               Bayar Via QRIS
             </button>
             <button
               onClick={() => setActiveMethod("PETUGAS")}
-              className={`py-2 px-6 rounded-full font-semibold transition duration-200 ${
+              className={`h-11 px-6 rounded-[10px] text-[15px] font-normal transition ${
                 activeMethod === "PETUGAS"
-                  ? "bg-[#1C7C54] text-white shadow-lg"
-                  : "bg-white text-[#1C7C54] border border-[#1C7C54] hover:bg-gray-50"
+                  ? "bg-green dark:bg-green-dark text-white dark:text-black shadow-md"
+                  : "bg-green dark:bg-green-dark text-white dark:text-black hover:bg-[#0AA868] dark:hover:bg-green"
               }`}
             >
               Bayar Langsung ke Petugas
             </button>
           </div>
-
-          {/* Langkah-langkah Pembayaran */}
-          <div>
-            <h2
-              className="text-2xl font-bold mb-6"
-              style={{ color: greenColor }}
-            >
-              {activeTitle}
+          {/* Judul langkah + deskripsi dinamis */}
+          <div className="mb-6">
+            <h2 className="text-[20px] text-green dark:text-green-dark font-semibold leading-snug">
+              {title}
             </h2>
-
-            {/* Grid Langkah-langkah: Flex wrap untuk 5 kolom responsif, gap 20px */}
-            <div className="flex flex-wrap gap-[20px] justify-start">
-              {activeSteps.map((step, index) => (
-                <StepCard
-                  key={step.id}
-                  {...step}
-                  // Set langkah pertama QRIS sebagai aktif
-                  isActive={index === 0 && activeMethod === "QRIS"}
-                />
-              ))}
-            </div>
-
-            {/* Catatan Peringatan di Bawah */}
-            {activeMethod === "QRIS" && (
-              <div className="mt-10 p-4 border border-yellow-300 bg-yellow-50 rounded-lg flex items-start space-x-3">
-                <AlertTriangle className="w-6 h-6 text-yellow-600 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-yellow-700">
-                  Bayar hanya melalui QRIS resmi DLH. Cek kembali nama penerima
-                  pada layar pembayaran sebelum konfirmasi.
-                </p>
-              </div>
+            {activeMethod === "QRIS" ? (
+              <p className="text-[15px] text-[#656565] font-medium mt-1">
+                Cepat, aman, dan tanpa tunai.
+              </p>
+            ) : (
+              <p className="text-[15px] text-[#656565] font-medium mt-1">
+                Cocok untuk pengguna yang membutuhkan layanan tatap muka.
+              </p>
             )}
           </div>
+
+          {/* Grid 4 kolom di lg, 2 kolom di md — wrap sisa ke baris berikutnya */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {steps.map((s) => (
+              <StepCard key={s.id} {...s} />
+            ))}
+          </div>
+
+          {/* Catatan Peringatan di Bawah */}
+          {activeMethod === "QRIS" ? (
+            <div className="mt-10 max-w-[900px] p-4 border border-outline dark:border-outline-dark bg-fillKolom dark:bg-fillKolom-dark rounded-lg flex items-center gap-3">
+              <AlertTriangle className="w-5 h-5 text-green dark:text-green-dark flex-shrink-0" />
+              <p className="text-sm text-green dark:text-green-dark leading-snug">
+                Bayar hanya melalui QRIS resmi DLH. Cek kembali nama penerima
+                pada layar pembayaran sebelum konfirmasi.
+              </p>
+            </div>
+          ) : (
+            <div className="mt-10 max-w-[990px] p-4 border border-outline dark:border-outline-dark bg-fillKolom dark:bg-fillKolom-dark rounded-lg flex items-center gap-3">
+              <AlertTriangle className="w-5 h-5 text-green dark:text-green-dark flex-shrink-0" />
+              <p className="text-sm text-green dark:text-green-dark leading-snug">
+                Pastikan pembayaran dilakukan hanya kepada petugas resmi DLH
+                Kabupaten Bogor. Simpan bukti pembayaran sebagai arsip.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </section>

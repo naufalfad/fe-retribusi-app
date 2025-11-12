@@ -65,10 +65,6 @@ export default function StatusPembayaran() {
                     imageSrc={step.imageSrc}
                     className="w-60 h-36"
                   />
-                  {/* Judul di bawah Kartu */}
-                  <div className="mt-4 font-normal text-[15px] text-lg text-green dark:text-green-dark">
-                    {step.title}
-                  </div>
                 </div>
               ))}
             </div>

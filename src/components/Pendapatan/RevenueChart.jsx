@@ -1,4 +1,3 @@
-// src/components/Pendapatan/RevenueChart.jsx
 import {
   ResponsiveContainer,
   LineChart,
@@ -7,10 +6,24 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  Label,
 } from "recharts";
 
-export default function RevenueChart({ data = [], loading = false }) {
-  // fallback kalau datanya kosong banget → kasih 12 data nol biar chart gak invisible
+/**
+ * Props:
+ * - data: [{ month, value }]
+ * - loading: boolean
+ * - height: number (px) → default 600 agar pas dengan kartu 652 (padding 20)
+ * - yLabel: string → "Pendapatan (Rp)"
+ * - showTiltedTicks: boolean → miringkan label bulan
+ */
+export default function RevenueChart({
+  data = [],
+  loading = false,
+  height = 600,
+  yLabel = "",
+  showTiltedTicks = true,
+}) {
   const safeData =
     data && data.length
       ? data
@@ -30,11 +43,11 @@ export default function RevenueChart({ data = [], loading = false }) {
         ].map((m) => ({ month: m, value: 0 }));
 
   return (
-    <div className="h-[360px] md:h-[400px]">
+    <div style={{ height }}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={safeData}
-          margin={{ top: 0, right: 20, bottom: 40, left: 0 }}
+          margin={{ top: 8, right: 16, bottom: 70, left: 16 }} // ruang bawah untuk label miring
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
           <XAxis
@@ -46,10 +59,18 @@ export default function RevenueChart({ data = [], loading = false }) {
             tick={{ fontSize: 12, fill: "#4B5563" }}
           />
           <YAxis
-            tickFormatter={(v) => `Rp ${Math.round(v / 1_000_000)}`}
+            tickFormatter={(v) => v.toLocaleString("id-ID")}
             tick={{ fontSize: 12, fill: "#4B5563" }}
-            width={70}
-          />
+            width={100} // ruang kiri biar tidak mepet
+          >
+            <Label
+              value={yLabel}
+              angle={-90}
+              position="insideLeft"
+              offset={-5}
+              style={{ fill: "#6B7280", fontSize: 12 }}
+            />
+          </YAxis>
           <Tooltip
             formatter={(v) => `Rp ${Number(v).toLocaleString("id-ID")}`}
             labelFormatter={(l) => l}
@@ -57,9 +78,9 @@ export default function RevenueChart({ data = [], loading = false }) {
           <Line
             type="monotone"
             dataKey="value"
-            stroke="#7d93ff"
+            stroke="#7D93FF"
             strokeWidth={3}
-            dot={{ r: 4, strokeWidth: 2, fill: "#fff" }}
+            dot={{ r: 4, strokeWidth: 2, fill: "#fff", stroke: "#7D93FF" }}
             activeDot={{ r: 6 }}
             isAnimationActive={!loading}
           />

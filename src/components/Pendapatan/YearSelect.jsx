@@ -13,14 +13,15 @@ export default function YearSelect({
         value={isEmpty ? "" : value}
         onChange={(e) => onChange?.(Number(e.target.value))}
         className={[
-          "h-11 w-full rounded-2xl appearance-none",
-          "bg-white border border-[#D9D9D9] pl-4 pr-10",
-          "focus:outline-none focus:ring-2 focus:ring-[#1C7C54]/30",
-          "text-base",
-          isEmpty ? "text-black/40" : "text-black/80", // abu-abu saat placeholder
+          "w-full h-[53px] appearance-none cursor-pointer",
+          "rounded-[15px] bg-white",
+          "border border-[#B6D1C5]",
+          "shadow-[0_4px_12px_rgba(0,0,0,0.06)]",
+          "pl-4 pr-10 text-[16px] font-medium text-[#333]",
+          "focus:outline-none focus:ring-2 focus:ring-[#1C7C54]/30 focus:border-[#1C7C54]",
+          "transition-all duration-150 ease-in-out",
         ].join(" ")}
       >
-        {/* placeholder → tidak tampil di daftar (disabled + hidden) */}
         <option value="" disabled hidden>
           Pilih Tahun
         </option>
@@ -33,7 +34,7 @@ export default function YearSelect({
 
       {/* chevron */}
       <svg
-        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 opacity-70"
+        className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 opacity-70 text-[#333]"
         width="18"
         height="18"
         viewBox="0 0 24 24"

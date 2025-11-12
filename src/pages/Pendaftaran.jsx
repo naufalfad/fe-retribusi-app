@@ -1,17 +1,17 @@
+// src/pages/Pendaftaran.jsx
 import React, { useState } from "react";
-
 import {
   ChevronDown,
   ChevronUp,
   Smartphone,
   MapPin,
   FileText,
-  Phone,
   Mail,
   Map,
+  MessageCircle,
 } from "lucide-react";
 
-// Data Langkah-Langkah Pendaftaran
+/* ------------------------ DATA ------------------------ */
 const STEPS = [
   {
     step: "Buka halaman website resmi",
@@ -51,7 +51,6 @@ const STEPS = [
   },
 ];
 
-// Data Persyaratan
 const REQUIREMENTS = [
   {
     title: "Nomor WhatsApp Aktif",
@@ -62,267 +61,211 @@ const REQUIREMENTS = [
     title: "NIK/NIB",
     icon: FileText,
     description:
-      "Digunakan untuk validasi data wajib retribusi rumah tangga. NIB digunakan untuk validasi data wajib retribusi badan usaha.",
+      "Digunakan untuk validasi data wajib retribusi rumah tangga/badan usaha.",
   },
   {
     title: "Titik Koordinat",
     icon: MapPin,
-    description:
-      "Diperlukan pemutakhiran sampel pendaftaran untuk menemukan lokasi petugas.",
+    description: "Diperlukan untuk memetakan lokasi petugas.",
   },
   {
     title: "Alamat Lengkap",
     icon: Map,
     description:
-      "Diperlukan verifikasi tambahan untuk memastikan titik koordinat yang diinputkan benar atau sesuai.",
+      "Untuk verifikasi tambahan memastikan titik koordinat yang diinput sesuai.",
   },
 ];
 
-// Data FAQ
 const FAQS = [
   {
     question: "Saya tidak menerima kode OTP di WhatsApp",
     answer:
-      "Pastikan nomor WhatsApp Anda aktif, tidak sedang diblokir, dan memiliki koneksi internet yang baik. Tunggu beberapa saat, jika kode tidak masuk coba gunakan fitur kirim ulang OTP.",
+      "Pastikan nomor WhatsApp aktif, tidak diblokir, dan koneksi internet stabil. Coba kirim ulang OTP jika belum masuk.",
   },
   {
     question: "Bagaimana jika titik koordinat saya salah?",
     answer:
-      "Jika titik koordinat yang Anda masukkan tidak sesuai, data Anda akan diverifikasi secara manual. Kami menyarankan Anda melakukan proses verifikasi di kantor layanan.",
+      "Data akan diverifikasi manual oleh petugas. Disarankan melakukan verifikasi di kantor layanan.",
   },
   {
-    question: "Satu nomor WhatsApp bisa digunakan di berapa akun?",
+    question: "Satu nomor WhatsApp bisa digunakan di beberapa akun?",
     answer:
-      "Satu nomor WhatsApp hanya dapat digunakan untuk satu akun pendaftaran. Jika Anda mendaftar lebih dari satu jenis retribusi, Anda tetap harus menggunakan akun yang berbeda.",
+      "Tidak. Satu nomor hanya dapat digunakan untuk satu akun pendaftaran.",
   },
   {
     question: "Apakah pendaftaran bisa dilakukan tanpa NIK/NIB?",
     answer:
-      "Tidak. NIK/NIB adalah syarat wajib untuk memvalidasi identitas pendaftar retribusi, baik rumah tangga maupun badan usaha.",
+      "Tidak. NIK/NIB merupakan syarat wajib untuk validasi identitas pendaftar.",
   },
   {
     question: "Saya sudah daftar tapi tidak bisa login, kenapa?",
     answer:
-      "Pastikan Anda menggunakan email/nomor telepon dan kata sandi yang benar. Jika lupa kata sandi, gunakan fitur 'Lupa Kata Sandi' untuk mengatur ulang.",
+      "Pastikan email/nomor dan kata sandi benar. Jika lupa, gunakan fitur ‘Lupa Kata Sandi’.",
   },
+  // Tambahan agar list cukup panjang untuk memicu scroll
   {
-    question: "Bagaimana jika saya selalu mengisi data saat pendaftaran?",
+    question:
+      "Bagaimana jika saya salah mengisi data saat melakukan pendaftaran?",
     answer:
-      "Sistem kami didesain untuk menyimpan data pendaftaran. Coba hapus cache browser atau gunakan perangkat lain. Jika masalah berlanjut, hubungi Helpdesk kami.",
+      "Hubungi Helpdesk DLH melalui email/WhatsApp dengan menyebutkan nama dan nomor WhatsApp terdaftar. Petugas akan membantu koreksi setelah verifikasi.",
   },
 ];
 
-// Komponen untuk setiap persyaratan (MERAPIHKAN TEKS)
+/* ------------------------ ITEM KECIL ------------------------ */
+const StepItem = ({ step, text }) => (
+  <div className="relative pl-7">
+    <span className="absolute left-[6px] top-[6px] w-[8px] h-[8px] rounded-full bg-[#F7CA62]" />
+    <div className="space-y-[2px]">
+      <div className="text-[14px] font-semibold text-green dark:text-green-dark leading-tight">
+        {step}
+      </div>
+      <div className="text-[12px] text-black dark:text-black-dark leading-snug">
+        {text}
+      </div>
+    </div>
+  </div>
+);
+
 const RequirementItem = ({ title, icon: Icon, description }) => (
-  <div
-    // Menggunakan flex-col dan justify-between untuk mengisi seluruh ruang vertikal
-    className="flex flex-col justify-between p-5 border border-black/10 rounded-xl shadow-sm bg-gray-50/50 h-full flex-grow"
-  >
-    {/* Ikon dan Judul (di atas) */}
-    <div className="flex items-start space-x-2 mb-1">
-      <Icon className="w-5 h-5 text-[#1C7C54] flex-shrink-0 mr-1" />{" "}
-      {/* Tambah mr-1 pada ikon */}
-      {/* SUB JUDUL: Ukuran 14px */}
-      <h3 className="text-[14px] font-semibold text-[#1C7C54] leading-tight">
+  <div className="rounded-[10px] border border-outline dark:border-outline-dark bg-fillKolom dark:bg-fillKolom-dark shadow-sm p-4">
+    <div className="flex items-center gap-2 mb-[4px]">
+      <Icon className="w-[18px] h-[18px] text-green dark:text-green-dark" />
+      <h3 className="text-[14px] font-semibold text-green dark:text-green-dark leading-none">
         {title}
       </h3>
     </div>
-
-    {/* Deskripsi (di bawah) */}
-    {/* DESKRIPSI: Ukuran 12px */}
-    <p className="text-[12px] text-black/70 leading-snug">
-      {" "}
-      {/* Mengganti leading-normal menjadi leading-snug */}
+    <p className="text-[12px] text-black dark:text-black-dark leading-snug">
       {description}
     </p>
   </div>
 );
 
-// Komponen untuk format Langkah Pendaftaran yang unik (dengan dot besar)
-const StepItem = ({ step, text }) => {
-  // Styling untuk teks yang menonjol seperti tautan atau nama menu
-  const highlightText = (text) => {
-    // Mengubah teks yang dikelilingi kutip ganda atau URL menjadi tautan bergaya
-    return text.replace(
-      /(".*?"|https?:\/\/[^\s]+)/g,
-      '<span class="text-[#1C7C54] font-semibold underline-offset-2">$1</span>'
-    );
-  };
-
-  return (
-    <div className="flex items-start space-x-2">
-      {/* Dot/Titik Styling */}
-      <div className="mt-[7px] w-2 h-2 bg-[#1C7C54] rounded-full flex-shrink-0" />
-
-      {/* Konten Langkah */}
-      <div className="flex flex-col space-y-1">
-        {/* Sub Judul (14px) */}
-        <span className="font-semibold text-black/90 text-[14px] leading-snug">
-          {step}
-        </span>
-
-        {/* Deskripsi (12px) */}
-        <span
-          className="text-[12px] text-black/80 leading-snug"
-          dangerouslySetInnerHTML={{
-            __html: highlightText(text),
-          }}
-        />
-      </div>
-    </div>
-  );
-};
-
+/* ------------------------ PAGE ------------------------ */
 export default function Pendaftaran() {
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
-
-  const toggleFaq = (index) => {
-    setOpenFaqIndex(openFaqIndex === index ? null : index);
-  };
-
-  // Style yang Konsisten
-  const greenColor = "#1C7C54";
-  const darkGreenColor = "#155E3C";
+  const toggleFaq = (i) => setOpenFaqIndex((p) => (p === i ? null : i));
 
   return (
-    <section className="bg-white min-h-screen">
-      {/* Wrapper utama dengan padding 70px */}
-      <div className="px-[70px] w-full pt-10 md:pt-12 lg:pt-14 pb-14 md:pb-16 lg:pb-20">
-        {/* Header Utama */}
+    <section className="bg-background dark:bg-background-dark min-h-screen">
+      <div className="px-[70px] w-full pt-10 pb-14">
+        {/* Header */}
         <div className="text-center mb-12">
-          <h1
-            className="text-4xl md:text-5xl lg:text-6xl font-extrabold"
-            style={{ color: darkGreenColor }}
-          >
+          <h1 className="text-[60px] md:text-5xl lg:text-6xl font-bold text-green dark:text-green-dark">
             Cara Mendaftar
           </h1>
-          <p className="mt-3 text-lg font-medium text-black/70">
-            Tahapan pendaftaran Wajib Retribusi Sampah Kabupaten Bogor
+          <p className="mt-3 text-[16px] text-black dark:text-black-dark">
+            Pilih jalur pembayaran yang paling nyaman. Ikuti langkahnya satu per
+            satu hingga transaksi tercatat di sistem.
           </p>
         </div>
 
-        {/* Grid Konten Utama: Rasio 5fr_3fr dan gap 15px */}
-        <div className="grid lg:grid-cols-[5fr_3fr] gap-[15px]">
-          {/* KOLOM KIRI (Langkah Pendaftaran & Bantuan) - Rasio 5fr */}
-          <div>
-            {/* 1. Langkah Pendaftaran */}
-            <div
-              className="p-6 border border-black/10 rounded-xl shadow-lg" // Fleksibel
-            >
-              <h2
-                className="text-2xl font-bold mb-6"
-                style={{ color: greenColor }}
-              >
+        {/* === GRID 2 KOLOM === */}
+        <div className="grid lg:grid-cols-[5fr_3fr] gap-[15px] items-stretch">
+          {/* ===== KIRI: Langkah + Butuh Bantuan ===== */}
+          <div className="flex flex-col gap-[15px]">
+            {/* Langkah */}
+            <div className="rounded-[15px] border border-outline dark:border-outline-dark bg-fillKolom dark:bg-fillKolom-dark shadow-sm p-5">
+              <h2 className="text-[20px] font-semibold text-green dark:text-green-dark">
                 Langkah Pendaftaran Wajib Retribusi
               </h2>
-              {/* space-y-3 untuk jarak antar item 12px */}
-              <div className="space-y-3">
-                {STEPS.map((item, index) => (
-                  <StepItem key={index} {...item} />
-                ))}
+              <div className="relative mt-4">
+                <div className="absolute left-[9px] top-0 bottom-0 w-px bg-[#DCE6E1]" />
+                <div className="space-y-4">
+                  {STEPS.map((s, i) => (
+                    <StepItem key={i} {...s} />
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* 2. Butuh Bantuan? (Di bawah Langkah Pendaftaran) */}
-            <div
-              className="mt-10 p-6 border border-black/10 rounded-xl shadow-lg" // Fleksibel
-            >
-              <h2
-                className="text-xl font-bold mb-4"
-                style={{ color: darkGreenColor }}
-              >
-                Butuh Bantuan?
-              </h2>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="flex items-center space-x-3">
-                  <Mail className="w-6 h-6 text-[#1C7C54]" />
-                  <div>
-                    <div className="text-sm font-medium text-black/80">
-                      Email
+            {/* Butuh Bantuan */}
+            <div className="rounded-[15px] border border-outline dark:border-outline-dark bg-fillKolom dark:bg-fillKolom-dark shadow-sm p-5">
+              {/* Grid 12 kolom agar presisi; alamat sejajar dgn "Hubungi Helpdesk..." */}
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                {/* Kiri: judul + kontak */}
+                <div className="md:col-span-7">
+                  <h3 className="text-[18px] font-semibold text-green dark:text-green-dark">
+                    Butuh Bantuan?
+                  </h3>
+                  <p className="text-[13px] text-teksKolom dark:text-teksKolom-dark mt-[2px]">
+                    Hubungi Helpdesk DLH Kabupaten Bogor
+                  </p>
+
+                  <div className="mt-3 flex flex-wrap items-center gap-3">
+                    <div className="inline-flex items-center gap-2">
+                      <Mail className="w-[16px] h-[16px] text-black dark:text-black-dark" />
+                      <span className="text-[13px] text-black dark:text-black-dark">
+                        helpdesk.kabbogor@gmail.com
+                      </span>
                     </div>
-                    <div className="text-base text-black/90 font-semibold">
-                      helpdesk.kabgogr@gmail.com
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Phone className="w-6 h-6 text-[#1C7C54]" />
-                  <div>
-                    <div className="text-sm font-medium text-black/80">
-                      Kontak
-                    </div>
-                    <div className="text-base text-black/90 font-semibold">
-                      083-2345-8880
+                    <div className="inline-flex items-center gap-2">
+                      <MessageCircle className="w-[16px] h-[16px] text-black dark:text-black-dark" />
+                      <span className="text-[13px] text-black dark:text-black-dark">
+                        0813-2345-8880
+                      </span>
                     </div>
                   </div>
                 </div>
-                <div className="md:col-span-2 lg:col-span-1">
-                  <div className="text-sm font-medium text-black/80 mb-1">
-                    Alamat
-                  </div>
-                  <div className="text-base text-black/90">
-                    Jl. Tegar Beriman, Kec. Cibinong, Kabupaten Bogor, Jawa
-                    Barat 16914
-                  </div>
+
+                {/* Kanan: alamat (offset agar sejajar dgn paragraf "Hubungi Helpdesk...") */}
+                <div className="md:col-span-5 md:self-start md:mt-[22px]">
+                  <span className="block text-[12px] text-teksKolom dark:text-teksKolom-dark font-medium">
+                    Alamat:
+                  </span>
+                  <p className="text-[12px] text-teksKolom dark:text-teksKolom-dark leading-snug mt-[1px]">
+                    Jl. Tegar Beriman, Tengah, Kec. Cibinong, Kabupaten Bogor,
+                    Jawa Barat 16914
+                  </p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* KOLOM KANAN (Persyaratan & FAQ) - Rasio 3fr */}
-          <div>
-            {/* 3. Persyaratan */}
-            <div
-              className="p-6 border border-black/10 rounded-xl shadow-lg" // Fleksibel
-            >
-              <h2
-                className="text-2xl font-bold mb-6"
-                style={{ color: greenColor }}
-              >
+          {/* ===== KANAN: Persyaratan + FAQ ===== */}
+          <div className="flex flex-col gap-[15px] h-full min-h-0">
+            {/* Persyaratan (auto height) */}
+            <div className="rounded-[15px] border border-outline dark:border-outline-dark bg-fillKolom dark:bg-fillKolom-dark shadow-sm p-5">
+              <h3 className="text-[22px] font-extrabold text-green dark:text-green-dark">
                 Persyaratan
-              </h2>
-              {/* Grid 2 kolom di layar besar, yang kini memiliki lebih banyak ruang */}
-              <div className="grid grid-cols-2 grid-rows-2 gap-4">
-                {REQUIREMENTS.map((req, index) => (
-                  <RequirementItem key={index} {...req} />
+              </h3>
+              <div className="mt-4 grid grid-cols-2 gap-[10px]">
+                {REQUIREMENTS.map((r, i) => (
+                  <RequirementItem key={i} {...r} />
                 ))}
               </div>
             </div>
 
-            {/* 4. FAQ Singkat (Di bawah Persyaratan) */}
-            <div className="mt-10 p-6 border border-black/10 rounded-xl shadow-lg">
-              {/* Pindah mb-6 ke div terluar h2 untuk pemisah yang lebih baik */}
-              <h2
-                className="text-2xl font-bold pb-6 border-b border-black/10 mb-6"
-                style={{ color: darkGreenColor }}
-              >
+            {/* FAQ (flex-1 + scroll internal) */}
+            <div className="rounded-[15px] border border-outline dark:border-outline-dark bg-fillKolom dark:bg-fillKolom-dark shadow-sm p-5 flex-1 min-h-0 flex flex-col">
+              <h3 className="text-[20px] font-semibold text-green dark:text-green-dark">
                 FAQ Singkat
-              </h2>
+              </h3>
               <div
-                className="divide-y divide-black/10" // Fleksibel
+                className="mt-2 flex-1 min-h-0 overflow-y-auto pr-1
+                divide-y-[0.5px] divide-[#D9D9D9] border-t-[0.5px] border-[#D9D9D9]"
               >
-                {FAQS.map((faq, index) => (
-                  <div
-                    key={index}
-                    className="py-4 cursor-pointer"
-                    onClick={() => toggleFaq(index)}
+                {FAQS.map((faq, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setOpenFaqIndex((p) => (p === i ? null : i))}
+                    className="w-full text-left py-3"
                   >
-                    <div className="flex justify-between items-center">
-                      <span className="text-base font-medium text-black/90">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[14px] text-black dark:text-black-dark font-medium">
                         {faq.question}
                       </span>
-                      {openFaqIndex === index ? (
-                        <ChevronUp className="w-5 h-5 text-[#1C7C54]" />
+                      {openFaqIndex === i ? (
+                        <ChevronUp className="w-[16px] h-[16px] text-teksKolom dark:text-teksKolom-dark" />
                       ) : (
-                        <ChevronDown className="w-5 h-5 text-black/60" />
+                        <ChevronDown className="w-[16px] h-[16px] text-teksKolom dark:text-teksKolom-dark" />
                       )}
                     </div>
-                    {openFaqIndex === index && (
-                      <p className="mt-3 text-sm text-black/70 transition-all duration-300">
+                    {openFaqIndex === i && (
+                      <p className="mt-2 text-[13px] text-teksKolom dark:text-teksKolom-dark leading-snug">
                         {faq.answer}
                       </p>
                     )}
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>

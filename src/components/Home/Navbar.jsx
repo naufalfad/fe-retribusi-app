@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import Logo from "../../assets/logo-svg.svg";
-import ModeIcon from "../../assets/mode-icon.svg"; // ikon SVG hasil export Figma-mu
+import ModeIcon from "../../assets/mode-icon.svg";
 
-const STORAGE_KEY = "theme"; // 'light' | 'dark'
+const STORAGE_KEY = "theme";
 
-const Navbar = () => {
+export default function Navbar() {
   const [isDark, setIsDark] = useState(false);
+  const [openMore, setOpenMore] = useState(false);
 
-  // inisialisasi tema saat load
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     const prefersDark = window.matchMedia(
@@ -18,7 +18,6 @@ const Navbar = () => {
     setIsDark(initialDark);
   }, []);
 
-  // toggle saat ikon diklik
   const toggleTheme = () => {
     const next = !isDark;
     setIsDark(next);
@@ -27,101 +26,144 @@ const Navbar = () => {
   };
 
   return (
-    <header
-      className="
-        sticky top-0 z-50 w-full
-        bg-[white] dark:bg-background-dark transition-colors
-      "
-    >
-      {/* gunakan px-[70px] untuk margin kiri-kanan */}
-      <div className="flex items-center justify-between px-[70px] py-4">
-        {/* kiri: logo + menu */}
-        <div className="flex items-center gap-[163px]">
-          {/* logo */}
+    <header className="sticky top-0 z-50 w-full bg-white dark:bg-background-dark transition-colors">
+      <div className="flex items-center justify-between px-4 py-3 sm:px-[70px] sm:py-4">
+        {/* KIRI: Logo + (ikon mode kecil hanya mobile) + NAV */}
+        <div className="flex items-center gap-[8px] sm:gap-[260px]">
           <img
             src={Logo}
             alt="Kabupaten Bogor"
-            className="w-[58px] h-[68.943px] flex-shrink-0 aspect-[58/68.94]"
+            className="w-[24px] h-[29px] sm:w-[58px] sm:h-[68.94px] flex-shrink-0"
           />
 
-          {/* navbar links */}
-          <nav>
-            <ul className="flex items-center gap-[40px]">
-              <li>
-                <a
-                  href="#beranda"
-                  className="text-[black] dark:text-[white] text-[17px] font-normal leading-normal whitespace-nowrap"
-                >
-                  Beranda
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#informasi"
-                  className="text-[black] dark:text-[white] text-[17px] font-normal leading-normal whitespace-nowrap"
-                >
-                  Informasi Retribusi
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#cekstatus"
-                  className="text-[black] dark:text-[white] text-[17px] font-normal leading-normal whitespace-nowrap"
-                >
-                  Cek Status
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#caramendaftar"
-                  className="text-[black] dark:text-[white] text-[17px] font-normal leading-normal whitespace-nowrap"
-                >
-                  Cara Mendaftar
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#carabayar"
-                  className="text-[black] dark:text-[white] text-[17px] font-normal leading-normal whitespace-nowrap"
-                >
-                  Cara Pembayaran
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#pendapatan"
-                  className="text-[black] dark:text-[white] text-[17px] font-normal leading-normal whitespace-nowrap"
-                >
-                  Pendapatan
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-
-        {/* kanan: ikon (klik-able) + tombol login */}
-        <div className="flex items-center gap-[27px]">
-          {/* gunakan ikon yang sama, dibuat clickable */}
+          {/* Ikon mode kecil — hanya mobile */}
           <button
             type="button"
             onClick={toggleTheme}
-            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-            className="w-[30.25px] h-[30.25px] flex-shrink-0"
+            aria-label="Toggle theme"
+            className="block sm:hidden w-[16px] h-[16px]"
             title={isDark ? "Light mode" : "Dark mode"}
           >
             <img
               src={ModeIcon}
               alt="Mode"
-              className="w-[30.25px] h-[30.25px] flex-shrink-0 dark:invert"
+              className="w-full h-full dark:invert"
             />
           </button>
 
-          {/* tombol login */}
+          {/* NAVBAR */}
+          {/* ml kecil hanya di mobile; desktop kembali 0 */}
+          <nav className="ml-[8px] sm:ml-0">
+            <ul className="flex items-center gap-[19px] sm:gap-[40px] text-[10px] sm:text-[17px] font-normal text-black dark:text-white">
+              <li>
+                <a href="#beranda">Home</a>
+              </li>
+              <li>
+                <a href="#informasi">Informasi</a>
+              </li>
+              <li>
+                <a href="#cekstatus">Cek Status</a>
+              </li>
+
+              {/* Desktop: tampil penuh */}
+              <li className="hidden sm:list-item">
+                <a href="#caramendaftar">Cara Mendaftar</a>
+              </li>
+              <li className="hidden sm:list-item">
+                <a href="#carabayar">Cara Pembayaran</a>
+              </li>
+              <li className="hidden sm:list-item">
+                <a href="#pendapatan">Pendapatan</a>
+              </li>
+
+              {/* Mobile: Lainnya */}
+              <li className="relative sm:hidden">
+                <button
+                  type="button"
+                  onClick={() => setOpenMore((v) => !v)}
+                  className="flex items-center gap-[4px]"
+                  aria-haspopup="menu"
+                  aria-expanded={openMore}
+                >
+                  Lainnya
+                  <svg
+                    className={`w-[10px] h-[10px] transition-transform ${
+                      openMore ? "rotate-180" : ""
+                    }`}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path
+                      d="M6 9l6 6 6-6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+
+                {openMore && (
+                  <div
+                    role="menu"
+                    className="absolute left-0 top-[20px] min-w-[150px] rounded-[8px] border border-black/10 bg-white dark:bg-[#1a1a1a] shadow-md py-2 z-50"
+                  >
+                    <a
+                      role="menuitem"
+                      href="#caramendaftar"
+                      className="block px-3 py-2 text-[10px] hover:bg-black/5 dark:hover:bg-white/10"
+                    >
+                      Cara Mendaftar
+                    </a>
+                    <a
+                      role="menuitem"
+                      href="#carabayar"
+                      className="block px-3 py-2 text-[10px] hover:bg-black/5 dark:hover:bg-white/10"
+                    >
+                      Cara Pembayaran
+                    </a>
+                    <a
+                      role="menuitem"
+                      href="#pendapatan"
+                      className="block px-3 py-2 text-[10px] hover:bg-black/5 dark:hover:bg-white/10"
+                    >
+                      Pendapatan
+                    </a>
+                    <a
+                      role="menuitem"
+                      href="#login"
+                      className="block px-3 py-2 text-[10px] hover:bg-black/5 dark:hover:bg-white/10"
+                    >
+                      Login
+                    </a>
+                  </div>
+                )}
+              </li>
+            </ul>
+          </nav>
+        </div>
+
+        {/* KANAN: ikon mode besar + tombol Masuk — hanya desktop */}
+        <div className="hidden sm:flex items-center gap-[27px]">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="w-[30.25px] h-[30.25px]"
+            aria-label="Toggle theme"
+            title={isDark ? "Light mode" : "Dark mode"}
+          >
+            <img
+              src={ModeIcon}
+              alt="Mode"
+              className="w-full h-full dark:invert"
+            />
+          </button>
+
           <button
             type="button"
             className="flex w-[87px] h-[38px] px-[21px] py-[2px] justify-center items-center gap-[10px]
-                       rounded-[7px] bg-green text-[white] text-[17px] font-normal leading-normal
-                       hover:brightness-95 dark:bg-green-dark dark:text-[black] transition"
+                   rounded-[7px] bg-green text-white text-[17px] font-normal
+                   hover:brightness-95 dark:bg-green-dark dark:text-black transition"
           >
             Masuk
           </button>
@@ -129,6 +171,4 @@ const Navbar = () => {
       </div>
     </header>
   );
-};
-
-export default Navbar;
+}

@@ -1,26 +1,37 @@
 import React from "react";
 import StatCard from "./StatCard";
-// Asumsi: RequirementItem juga diimport jika digunakan di sini
 
 function InfoIntro({ illustrationSrc, stats }) {
-  // Warna hijau yang konsisten
   const darkGreenColor = "#1C7C54";
 
-  // Fungsi placeholder untuk onClick
   const handleStatClick = (label) => {
     console.log(`Statistik diklik: ${label}`);
   };
 
   return (
-    // Menggunakan rasio 2 kolom sama rata (50/50) dengan gap yang sangat kecil
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-4 items-start py-12">
+    // items-start biar 2 kolomnya mulai dari atas
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-4 items-start pt-12 pb-4">
       {/* Kolom Kiri: Ilustrasi */}
-      <div className="flex justify-center lg:justify-start">
+      <div
+        className="
+          flex
+          justify-center
+          lg:justify-start
+          items-start           /* ⬅️ ini penting */
+        "
+      >
         <img
           src={illustrationSrc}
           alt="Ilustrasi Informasi Retribusi"
-          // Menambahkan margin negatif di KANAN agar ilustrasi menjorok ke kolom KANAN
-          className="relative w-full max-w-lg h-auto flex justify-start lg:-mr-16"
+          className="
+    relative
+    w-full
+    max-w-lg
+    h-auto
+    lg:-mr-16
+    self-start
+    lg:-mt-12
+  "
           onError={(e) => {
             e.target.onerror = null;
             e.target.src =
@@ -30,11 +41,8 @@ function InfoIntro({ illustrationSrc, stats }) {
       </div>
 
       {/* Kolom Kanan: Teks & Statistik */}
-      <div className="pt-8">
-        <h2
-          className="text-[60px] md:text-[46px] font-bold leading-tight"
-          style={{ color: darkGreenColor }}
-        >
+      <div className="pt-0 lg:-ml-10 xl:-ml-20">
+        <h2 className="text-[60px] font-bold leading-tight text-green dark:text-green-dark">
           Informasi Retribusi
         </h2>
 
@@ -47,14 +55,13 @@ function InfoIntro({ illustrationSrc, stats }) {
           transparan, dan terhubung secara digital.
         </p>
 
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-5">
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-[6px]">
           {stats.map((item, index) => (
             <StatCard
               key={index}
               value={item.value}
               label={item.label}
               sublabel={item.sublabel}
-              // Tambahkan onClick handler
               onClick={() => handleStatClick(item.label)}
             />
           ))}

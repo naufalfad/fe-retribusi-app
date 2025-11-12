@@ -26,7 +26,7 @@ export default function StatusCard({ title, imageSrc, description }) {
       </div>
 
       {/* Judul */}
-      <div className="text-[15px] font-semibold text-[#1C7C54] mb-1 leading-snug">
+      <div className="text-[15px] font-normal text-green dark:text-green-dark mb-1 leading-snug">
         {title}
       </div>
 
